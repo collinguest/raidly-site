@@ -6,14 +6,97 @@
 
 <link rel="stylesheet" href="assets/styles.css">
 <script src="assets/data.js"></script>
+
+<style>
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #0f1016;
+  padding: 20px;
+  border-right: 1px solid #1c1d22;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px;
+  color: #aaa;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.sidebar a:hover {
+  background: #1a1b22;
+  color: #00e5ff;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #b9a7ff;
+  margin-bottom: 25px;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 28px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+/* TOUR OVERLAY */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  z-index: 999;
+}
+
+.highlight {
+  position: relative;
+  z-index: 1000;
+  box-shadow: 0 0 0 3px #00e5ff, 0 0 30px rgba(0,229,255,0.3);
+  border-radius: 12px;
+}
+
+/* TOOLTIP */
+.tooltip {
+  position: fixed;
+  background: #14151a;
+  border: 1px solid #2a2b33;
+  padding: 14px;
+  border-radius: 12px;
+  max-width: 260px;
+  color: #fff;
+  z-index: 1001;
+}
+
+.tooltip button {
+  margin-top: 10px;
+  width: 100%;
+}
+</style>
 </head>
 
 <body>
 
+<div id="overlay"></div>
+
 <div class="app-shell">
 
   <!-- SIDEBAR -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <div class="logo">Raidly</div>
 
     <a href="#">Overview</a>
@@ -25,19 +108,23 @@
   <!-- MAIN -->
   <div class="main">
 
-    <h2>Overview</h2>
+    <h2 id="overview">Overview</h2>
     <p>Manage your raid infrastructure across all servers</p>
 
-    <div class="card" style="margin: 20px 0;">
+    <div class="card" id="statsCard" style="margin: 20px 0;">
       <h3>Network Health</h3>
       <p>Active Raid Trains: 3</p>
       <p>Live Streamers: 12</p>
       <p>Viewer Flow: Stable</p>
     </div>
 
-    <h3>Servers</h3>
+    <h3 id="serversTitle">Servers</h3>
 
     <div class="grid" id="servers"></div>
+
+    <button class="btn" onclick="startTour()" style="margin-top:20px;">
+      Replay Tour
+    </button>
 
   </div>
 
@@ -57,9 +144,7 @@ SERVER_DATA.forEach(s => {
 
   card.innerHTML = `
     <h3>${s.name}</h3>
-    <p>Raid system status</p>
-    <div class="badge ${status}">${text}</div><br><br>
-    <button class="btn primary">Open Server</button>
+    <div class="badge ${status}">${text}</div>
   `;
 
   card.onclick = () => {
@@ -68,6 +153,99 @@ SERVER_DATA.forEach(s => {
 
   container.appendChild(card);
 });
+
+/* =========================
+   GUIDED TOUR SYSTEM
+========================= */
+
+const steps = [
+  {
+    el: "#sidebar",
+    text: "This is your navigation. You control everything from here.",
+  },
+  {
+    el: "#overview",
+    text: "This is your dashboard overview — live system health.",
+  },
+  {
+    el: "#statsCard",
+    text: "Here you see real-time raid activity across all servers.",
+  },
+  {
+    el: "#serversTitle",
+    text: "Each server runs its own raid train system.",
+  },
+  {
+    el: "#servers",
+    text: "Click a server to open its raid control panel.",
+  }
+];
+
+let currentStep = 0;
+
+const overlay = document.getElementById("overlay");
+
+function startTour() {
+  currentStep = 0;
+  overlay.style.display = "block";
+  showStep();
+}
+
+function showStep() {
+
+  removeHighlights();
+
+  if (currentStep >= steps.length) {
+    endTour();
+    return;
+  }
+
+  const step = steps[currentStep];
+  const el = document.querySelector(step.el);
+
+  if (!el) return;
+
+  el.classList.add("highlight");
+
+  const rect = el.getBoundingClientRect();
+
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
+  tooltip.innerHTML = `
+    <div>${step.text}</div>
+    <button class="btn primary" onclick="nextStep()">Next</button>
+  `;
+
+  document.body.appendChild(tooltip);
+
+  tooltip.style.top = (rect.bottom + 10) + "px";
+  tooltip.style.left = rect.left + "px";
+}
+
+function nextStep() {
+  document.querySelectorAll(".tooltip").forEach(t => t.remove());
+  currentStep++;
+  showStep();
+}
+
+function removeHighlights() {
+  document.querySelectorAll(".highlight").forEach(el => {
+    el.classList.remove("highlight");
+  });
+}
+
+function endTour() {
+  overlay.style.display = "none";
+  removeHighlights();
+  document.querySelectorAll(".tooltip").forEach(t => t.remove());
+
+  localStorage.setItem("raidly_tour_done", "true");
+}
+
+/* AUTO START FIRST TIME */
+if (!localStorage.getItem("raidly_tour_done")) {
+  setTimeout(startTour, 800);
+}
 
 </script>
 
