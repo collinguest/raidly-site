@@ -2,278 +2,126 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly</title>
+<title>Raidly - Raid Train System</title>
 
 <style>
-
-/* RESET */
-* {
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background:#0b0c10;
-  color:white;
+  background: #0b0c10;
+  color: white;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
-.sidebar {
-  position:fixed;
-  left:0;
-  top:0;
-  height:100%;
-  width:220px;
-  background:#0f1016;
-  border-right:1px solid #1c1d22;
-  padding:20px;
-  z-index:999;
+/* layout */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 60px 20px;
+  text-align: center;
 }
 
+/* logo */
 .logo {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:#b9a7ff;
-  font-weight:bold;
-  margin-bottom:30px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #b9a7ff;
+  margin-bottom: 20px;
 }
 
-.logo img {
-  width:36px;
-  height:36px;
+/* headline */
+h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
 }
 
-/* MENU */
-.menu {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+p {
+  color: #aaa;
+  font-size: 16px;
+  margin-bottom: 30px;
 }
 
-.menu a {
-  color:#00e5ff;
-  text-decoration:none;
-  padding:10px;
-  border-radius:8px;
-  transition:0.2s;
-}
-
-.menu a:hover {
-  background:rgba(0,229,255,0.08);
-}
-
-/* pricing highlight */
-.pricing-btn {
-  background:#b9a7ff;
-  color:#0b0c10 !important;
-  font-weight:bold;
-  text-align:center;
-}
-
-/* =========================
-   MAIN CONTENT (FIXED)
-========================= */
-.main {
-  margin-left:220px;
-  min-height:100vh;
-  padding:80px 40px;
-  position:relative;
-  z-index:1;
-}
-
-/* HERO */
-.hero {
-  text-align:center;
-  margin-top:40px;
-}
-
-.hero h1 {
-  font-size:52px;
-  color:#b9a7ff;
-}
-
-.hero p {
-  max-width:600px;
-  margin:20px auto;
-  color:#aaa;
-}
-
-/* BUTTONS */
+/* buttons */
 .btn {
-  display:inline-block;
-  padding:12px 18px;
-  margin:10px;
-  border-radius:10px;
-  text-decoration:none;
-  transition:0.2s;
+  display: inline-block;
+  padding: 14px 22px;
+  margin: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .primary {
-  background:#00e5ff;
-  color:#000;
+  background: #00e5ff;
+  color: black;
 }
 
-/* FEATURES */
+.secondary {
+  background: #b9a7ff;
+  color: black;
+}
+
+/* feature cards */
 .features {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-  margin-top:60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 50px;
 }
 
 .card {
-  background:#14151a;
-  padding:20px;
-  border-radius:12px;
-  border:1px solid #222;
+  background: #14151a;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #222;
 }
-
-.card h3 {
-  color:#00e5ff;
-}
-
-/* MOBILE */
-@media(max-width:900px){
-
-  .sidebar {
-    position:fixed;
-    transform:translateX(-100%);
-    width:260px;
-  }
-
-  .sidebar.open {
-    transform:translateX(0);
-  }
-
-  .main {
-    margin-left:0;
-    padding:80px 20px;
-  }
-
-  .features {
-    grid-template-columns:1fr;
-  }
-}
-
-/* HAMBURGER */
-.hamburger {
-  display:none;
-  position:fixed;
-  top:15px;
-  left:15px;
-  z-index:1001;
-  background:#00e5ff;
-  border:none;
-  width:40px;
-  height:40px;
-  border-radius:8px;
-}
-
-/* overlay */
-.overlay {
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  z-index:998;
-}
-
-@media(max-width:900px){
-  .hamburger { display:block; }
-  .overlay.show { display:block; }
-}
-
 </style>
+
 </head>
 
 <body>
 
-<!-- HAMBURGER -->
-<button class="hamburger" onclick="toggleMenu()">☰</button>
+<div class="container">
 
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+  <div class="logo">Raidly</div>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
+  <h1>Organise Raid Trains Like a Pro</h1>
 
-<div class="logo">
-<img src="logo.png">
-Raidly
-</div>
+  <p>
+    Manage streamers, schedule raids, and automate growth across your Discord community.
+  </p>
 
-<div class="menu">
+  <!-- CTA BUTTONS -->
+  <a class="btn primary"
+     href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
+    Install Raidly Bot
+  </a>
 
-<a href="index.html">Home</a>
-<a href="demo.html">Demo</a>
+  <a class="btn secondary"
+     href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&response_type=code&redirect_uri=https%3A%2F%2Fraidly.pages.dev%2Fauth%2Fdiscord%2Fcallback&scope=identify%20guilds">
+    Login with Discord
+  </a>
 
-<a class="pricing-btn" href="pricing.html">
-View Pricing
-</a>
+  <!-- FEATURES -->
+  <div class="features">
 
-<a href="https://discord.gg/mQxzQjPMaz" target="_blank">
-Join Discord
-</a>
+    <div class="card">
+      <h3>Raid Trains</h3>
+      <p>Automate structured raid schedules across streamers.</p>
+    </div>
 
-<a href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&response_type=code&redirect_uri=https%3A%2F%2Fraidly.pages.dev%2Fauth%2Fdiscord%2Fcallback&scope=identify%20guilds">
-Login
-</a>
+    <div class="card">
+      <h3>Live Tracking</h3>
+      <p>See active raids and streamer flow in real time.</p>
+    </div>
 
-</div>
+    <div class="card">
+      <h3>Server Management</h3>
+      <p>Control multiple Discord servers from one dashboard.</p>
+    </div>
 
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-<div class="hero">
-
-<h1>Live Raid Coordination System</h1>
-
-<p>
-Automate raid trains, manage backup slots, and sync Twitch + Discord identities in real time.
-</p>
-
-<a class="btn primary" href="https://discord.gg/mQxzQjPMaz" target="_blank">
-Get Started
-</a>
+  </div>
 
 </div>
-
-<div class="features">
-
-<div class="card">
-<h3>Coordination</h3>
-<p>Real-time raid train management system.</p>
-</div>
-
-<div class="card">
-<h3>Sync</h3>
-<p>Discord + Twitch identity linking.</p>
-</div>
-
-<div class="card">
-<h3>Automation</h3>
-<p>Smart scheduling + backup handling.</p>
-</div>
-
-</div>
-
-</div>
-
-<script>
-function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("open");
-  document.getElementById("overlay").classList.toggle("show");
-}
-</script>
 
 </body>
 </html>
