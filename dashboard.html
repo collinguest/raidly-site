@@ -106,40 +106,43 @@
     </div>
 
     <!-- SERVERS -->
-    <div class="grid">
-
-      <div class="card">
-        <h3>Gaming Hub</h3>
-        <div class="badge free">Free</div>
-        <a class="btn primary"
-           href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
-          Install Raidly
-        </a>
-      </div>
-
-      <div class="card">
-        <h3>Streamer Lounge</h3>
-        <div class="badge free">Free</div>
-        <a class="btn primary"
-           href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
-          Install Raidly
-        </a>
-      </div>
-
-      <div class="card">
-        <h3>Community Server</h3>
-        <div class="badge free">Free</div>
-        <a class="btn primary"
-           href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
-          Install Raidly
-        </a>
-      </div>
-
-    </div>
+    <div class="grid" id="servers"></div>
 
   </div>
 
 </div>
+
+<!-- SCRIPT -->
+<script>
+const servers = [
+  { name: "Gaming Hub", installed: true },
+  { name: "Streamer Lounge", installed: false },
+  { name: "Community Server", installed: true }
+];
+
+const container = document.getElementById("servers");
+
+servers.forEach(server => {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const statusClass = server.installed ? "installed" : "not-installed";
+  const statusText = server.installed ? "Installed ✔" : "Not Installed";
+  const buttonText = server.installed ? "Reinstall" : "Install Raidly";
+
+  card.innerHTML = `
+    <h3>${server.name}</h3>
+    <div class="badge ${statusClass}">${statusText}</div>
+
+    <a class="btn primary"
+      href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
+      ${buttonText}
+    </a>
+  `;
+
+  container.appendChild(card);
+});
+</script>
 
 </body>
 </html>
