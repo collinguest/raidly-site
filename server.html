@@ -2,30 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly Server - Connected Train System</title>
+<title>Raidly Server</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 <script src="assets/data.js"></script>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <div class="sidebar">
+    <div class="logo">Raidly</div>
+
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#">Trains</a>
+    <a href="#">Backups</a>
+    <a href="#">Settings</a>
+  </div>
+
+  <div class="main">
+
+    <h2 id="title">Server</h2>
+    <p>Raid Train Control Panel</p>
+
+    <div class="card">
+      <h3>Live System Status</h3>
+      <p>All systems operational</p>
+    </div>
+
+    <h3 style="margin-top:20px;">Train Network</h3>
+
+    <div class="train-system" id="system"></div>
+
+  </div>
+
+</div>
 
 <style>
-.container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 40px;
-}
-
 .train-system {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 12px;
 }
 
 .train-row {
   position: relative;
   height: 70px;
-  background: #0f1016;
-  border-radius: 10px;
+  background: #14151a;
+  border-radius: 12px;
   padding: 10px;
+  border: 1px solid #23242b;
   overflow: hidden;
 }
 
@@ -36,71 +63,35 @@
   right: 10px;
   height: 2px;
   background: #222;
-  transform: translateY(-50%);
 }
 
 .train {
   position: absolute;
   top: 50%;
-  width: 40px;
-  height: 20px;
+  width: 38px;
+  height: 18px;
   border-radius: 20px;
   background: linear-gradient(135deg, #00e5ff, #b9a7ff);
   transform: translateY(-50%);
-  box-shadow: 0 0 15px rgba(0,229,255,0.6);
-  transition: 0.6s ease;
+  transition: 0.5s ease;
+  box-shadow: 0 0 12px rgba(0,229,255,0.4);
 }
 
 .label {
-  position: absolute;
-  top: 5px;
-  left: 10px;
   font-size: 12px;
   color: #aaa;
 }
-
-.status {
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  font-size: 11px;
-  padding: 3px 6px;
-  border-radius: 5px;
-}
-
-.installed {
-  background: #00e5ff;
-  color: black;
-}
-
-.not-installed {
-  background: #444;
-  color: white;
-}
 </style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <h1 id="title">Server Train System</h1>
-
-  <div class="card">
-    <h3>Live Connected System</h3>
-    <p>Trains are now powered by dashboard server data</p>
-  </div>
-
-  <div class="train-system" id="system"></div>
-
-</div>
 
 <script>
 
-// USE SAME DATA SOURCE
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name");
+
+document.getElementById("title").innerText = name || "Server";
+
 let trains = SERVER_DATA.map((s, i) => ({
   name: s.name,
-  installed: s.installed,
   index: Math.floor(Math.random() * 6)
 }));
 
@@ -110,16 +101,11 @@ function render() {
   system.innerHTML = "";
 
   trains.forEach((t, i) => {
-
     const row = document.createElement("div");
     row.className = "train-row";
 
-    const statusClass = t.installed ? "installed" : "not-installed";
-    const statusText = t.installed ? "Installed" : "Not Installed";
-
     row.innerHTML = `
       <div class="label">${t.name}</div>
-      <div class="status ${statusClass}">${statusText}</div>
       <div class="track"></div>
       <div class="train" id="train-${i}"></div>
     `;
@@ -129,26 +115,21 @@ function render() {
 }
 
 function move() {
-
   const rows = document.querySelectorAll(".train-row");
 
   trains.forEach((t, i) => {
-
-    const train = document.getElementById("train-" + i);
+    const el = document.getElementById("train-" + i);
 
     const width = rows[i].offsetWidth - 50;
     const step = width / 6;
 
-    t.index += t.installed ? 1 : 0.5;
+    t.index = (t.index + 1) % 6;
 
-    if (t.index >= 6) t.index = 0;
-
-    train.style.left = (t.index * step + 10) + "px";
+    el.style.left = (t.index * step + 10) + "px";
   });
 }
 
 render();
-
 setInterval(move, 1200);
 
 </script>
