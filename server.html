@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly Server - Raid Train Animation</title>
+<title>Raidly Server - Moving Train</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 
@@ -11,47 +11,48 @@
   max-width: 1000px;
   margin: auto;
   padding: 40px;
+  position: relative;
 }
 
 .slots {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 15px;
-  margin-top: 20px;
+  margin-top: 40px;
+  position: relative;
 }
 
+/* SLOT BOX */
 .slot {
   background: #14151a;
   padding: 15px;
   border-radius: 10px;
   border: 1px solid #222;
   text-align: center;
-  transition: 0.3s;
+  position: relative;
 }
 
-/* ACTIVE TRAIN SLOT */
-.active {
-  border: 2px solid #00e5ff;
-  box-shadow: 0 0 15px rgba(0,229,255,0.4);
-  transform: scale(1.05);
+/* TRAIN INDICATOR */
+.train {
+  position: absolute;
+  top: -25px;
+  width: 40px;
+  height: 20px;
+  background: linear-gradient(135deg, #00e5ff, #b9a7ff);
+  border-radius: 20px;
+  transition: 0.5s ease;
+  box-shadow: 0 0 15px rgba(0,229,255,0.6);
 }
 
-.tag {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  display: inline-block;
-  margin-bottom: 6px;
-}
-
-.main {
-  background: #00e5ff;
-  color: black;
-}
-
-.backup {
-  background: #b9a7ff;
-  color: black;
+/* small rail line */
+.track {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #222;
+  z-index: -1;
 }
 
 .activity {
@@ -69,13 +70,16 @@
   <h1>Raid Train Control</h1>
 
   <div class="card">
-    <h3>Live Raid Train</h3>
-    <p>Watch the train move through slots automatically</p>
+    <h3>Live Moving Raid Train</h3>
+    <p>The train physically moves across slots</p>
   </div>
 
-  <div class="card" style="margin-top:20px;">
-    <h3>Slots</h3>
-    <div class="slots" id="slots"></div>
+  <!-- TRAIN AREA -->
+  <div class="slots" id="slots">
+
+    <div class="track"></div>
+    <div class="train" id="train"></div>
+
   </div>
 
   <div class="card" style="margin-top:20px;">
@@ -87,94 +91,53 @@
 
 <script>
 
-// RAID TRAIN DATA
-let slots = [
-  { main: "StreamerA", backup: "Viewer1" },
-  { main: "StreamerB", backup: "Viewer2" },
-  { main: "StreamerC", backup: "" },
-  { main: "", backup: "StreamerD" },
-  { main: "", backup: "" },
-  { main: "", backup: "" }
-];
+let slots = new Array(6).fill(null).map((_, i) => ({
+  main: "Streamer " + (i + 1),
+  backup: "Backup " + (i + 1)
+}));
 
-let activeIndex = 0;
-
-const container = document.getElementById("slots");
+const train = document.getElementById("train");
 const activity = document.getElementById("activity");
 
-// RENDER SLOTS
-function renderSlots() {
-  container.innerHTML = "";
+let index = 0;
 
-  slots.forEach((slot, i) => {
-    const div = document.createElement("div");
-    div.className = "slot";
+// POSITION TRAIN OVER SLOT
+function moveTrainVisual() {
+  const slotWidth = document.querySelector(".slots").offsetWidth / 6;
 
-    if (i === activeIndex) {
-      div.classList.add("active");
-    }
+  train.style.left = (index * slotWidth + slotWidth / 2 - 20) + "px";
 
-    div.innerHTML = `
-      <h4>Slot ${i + 1}</h4>
+  log("🚂 Train moved to slot " + (index + 1));
 
-      <div class="tag main">
-        Main: ${slot.main || "Empty"}
-      </div><br>
+  index++;
 
-      <div class="tag backup">
-        Backup: ${slot.backup || "Empty"}
-      </div>
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-// TRAIN MOVEMENT
-function moveTrain() {
-  activeIndex++;
-
-  if (activeIndex >= slots.length) {
-    activeIndex = 0;
-    log("🚂 Raid train loop restarted");
-  } else {
-    log("➡ Train moved to slot " + (activeIndex + 1));
+  if (index >= slots.length) {
+    index = 0;
+    log("🔁 Train loop restarted");
   }
-
-  renderSlots();
 }
 
-// ACTIVITY LOG
+// ACTIVITY FEED
 function log(text) {
-  const line = document.createElement("div");
-  line.innerText = text;
+  const div = document.createElement("div");
+  div.innerText = text;
 
-  activity.prepend(line);
+  activity.prepend(div);
 
   if (activity.children.length > 6) {
     activity.removeChild(activity.lastChild);
   }
 }
 
-// AUTO BACKUP PROMOTION (kept simple)
-function autoFill() {
-  for (let i = 0; i < slots.length; i++) {
-    if (!slots[i].main && slots[i].backup) {
-      slots[i].main = slots[i].backup;
-      slots[i].backup = "";
-      log("🔁 Backup promoted in slot " + (i + 1));
-    }
-  }
-}
+// INIT POSITION
+setTimeout(() => {
+  moveTrainVisual();
+}, 500);
 
-// INIT
-renderSlots();
-
-// LOOP SYSTEM (THIS IS THE MAGIC)
+// LOOP
 setInterval(() => {
-  autoFill();
-  moveTrain();
-}, 3000);
+  moveTrainVisual();
+}, 2500);
 
 </script>
 
