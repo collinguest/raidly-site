@@ -1,64 +1,117 @@
-/* BASE */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: radial-gradient(circle at top, #11131a, #0b0c10);
-  color: white;
+  font-family: ui-sans-serif, system-ui, Arial;
+  background: radial-gradient(circle at top, #0f1117, #0b0c10);
+  color: #eaeaea;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-/* BUTTONS */
+/* APP BUTTON */
 .btn {
   display: inline-block;
-  padding: 14px 22px;
-  border-radius: 12px;
+  padding: 12px 18px;
+  border-radius: 10px;
   text-decoration: none;
-  font-weight: bold;
-  transition: 0.2s;
+  font-weight: 600;
+  transition: 0.2s ease;
+  cursor: pointer;
 }
 
 .btn:hover {
   transform: translateY(-2px);
 }
 
-/* PRIMARY BUTTON */
 .primary {
   background: linear-gradient(135deg, #00e5ff, #b9a7ff);
-  color: black;
+  color: #0b0c10;
 }
 
-/* CARDS */
+/* CARD SYSTEM (SaaS DEPTH) */
 .card {
   background: #14151a;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #222;
-  transition: 0.2s;
+  border: 1px solid #23242b;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  transition: 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
+  border-color: #2f313a;
 }
 
 /* BADGES */
 .badge {
   display: inline-block;
-  margin-top: 10px;
-  padding: 5px 10px;
-  border-radius: 6px;
   font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-top: 8px;
 }
 
-/* INSTALLED STATUS */
 .installed {
   background: #00e5ff;
-  color: black;
+  color: #0b0c10;
 }
 
-/* NOT INSTALLED STATUS */
 .not-installed {
   background: #444;
+  color: #fff;
+}
+
+/* TYPOGRAPHY HIERARCHY */
+h1, h2, h3 {
+  margin: 0 0 10px 0;
+}
+
+p {
+  color: #a7a7a7;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* APP SHELL FEEL */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: #0f1016;
+  padding: 20px;
+  border-right: 1px solid #1c1d22;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px;
+  color: #aaa;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.sidebar a:hover {
+  background: #1a1b22;
+  color: #00e5ff;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #b9a7ff;
+  margin-bottom: 25px;
+}
+
+.main {
+  flex: 1;
+  padding: 28px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
 }
