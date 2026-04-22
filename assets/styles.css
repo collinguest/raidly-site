@@ -1,1 +1,27 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0c10;
+  color: white;
+}
 
+a {
+  color: #00e5ff;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  padding: 20px;
+}
+
+/* simple card system for dashboard later */
+.card {
+  background: #14151a;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 15px;
+}
