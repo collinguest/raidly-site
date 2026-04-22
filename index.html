@@ -4,15 +4,9 @@
 <meta charset="UTF-8">
 <title>Raidly - Raid Train System</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0c10;
-  color: white;
-}
+<link rel="stylesheet" href="assets/styles.css">
 
-/* layout */
+<style>
 .container {
   max-width: 1100px;
   margin: auto;
@@ -20,7 +14,6 @@ body {
   text-align: center;
 }
 
-/* logo */
 .logo {
   font-size: 32px;
   font-weight: bold;
@@ -28,7 +21,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* headline */
 h1 {
   font-size: 42px;
   margin-bottom: 10px;
@@ -40,88 +32,97 @@ p {
   margin-bottom: 30px;
 }
 
-/* buttons */
-.btn {
-  display: inline-block;
-  padding: 14px 22px;
-  margin: 10px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.primary {
-  background: #00e5ff;
-  color: black;
-}
-
-.secondary {
-  background: #b9a7ff;
-  color: black;
-}
-
-/* feature cards */
 .features {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
   margin-top: 50px;
 }
-
-.card {
-  background: #14151a;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #222;
-}
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
+  <!-- LOGO -->
   <div class="logo">Raidly</div>
 
-  <h1>Organise Raid Trains Like a Pro</h1>
+  <!-- HERO -->
+  <h1>
+    Build <span style="color:#00e5ff;">Raid Trains</span> That Actually Grow
+  </h1>
 
   <p>
-    Manage streamers, schedule raids, and automate growth across your Discord community.
+    Manage streamers, automate raids, and grow your community with structure.
   </p>
 
-  <!-- CTA BUTTONS -->
+  <!-- BUTTONS -->
   <a class="btn primary"
      href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
     Install Raidly Bot
   </a>
 
-  <a class="btn secondary"
+  <a class="btn"
      href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&response_type=code&redirect_uri=https%3A%2F%2Fraidly.pages.dev%2Fauth%2Fdiscord%2Fcallback&scope=identify%20guilds">
     Login with Discord
   </a>
+
+  <!-- LIVE ACTIVITY -->
+  <div class="card" style="margin-top:40px;">
+    <h3>Live Raid Activity</h3>
+    <div id="activity"></div>
+  </div>
 
   <!-- FEATURES -->
   <div class="features">
 
     <div class="card">
       <h3>Raid Trains</h3>
-      <p>Automate structured raid schedules across streamers.</p>
+      <p>Automate structured raid schedules.</p>
     </div>
 
     <div class="card">
       <h3>Live Tracking</h3>
-      <p>See active raids and streamer flow in real time.</p>
+      <p>Monitor streamer activity in real time.</p>
     </div>
 
     <div class="card">
-      <h3>Server Management</h3>
-      <p>Control multiple Discord servers from one dashboard.</p>
+      <h3>Server Control</h3>
+      <p>Manage multiple Discord servers easily.</p>
     </div>
 
   </div>
 
 </div>
+
+<!-- SCRIPT -->
+<script>
+const activity = [
+  "StreamerA raided StreamerB",
+  "Raid train started",
+  "24 viewers transferred",
+  "New streamer joined",
+  "Raid chain extended"
+];
+
+const container = document.getElementById("activity");
+
+let i = 0;
+
+setInterval(() => {
+  const line = document.createElement("div");
+  line.innerText = activity[i % activity.length];
+
+  container.prepend(line);
+
+  if (container.children.length > 5) {
+    container.removeChild(container.lastChild);
+  }
+
+  i++;
+}, 2000);
+</script>
 
 </body>
 </html>
