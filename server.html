@@ -2,15 +2,42 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Server Panel</title>
+<title>Raidly Server</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 
 <style>
 .container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
   padding: 40px;
+}
+
+/* slots */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.slot {
+  background: #14151a;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #222;
+  text-align: center;
+}
+
+.slot h4 {
+  margin: 0 0 10px 0;
+}
+
+/* activity */
+.activity {
+  margin-top: 20px;
+  max-height: 150px;
+  overflow: hidden;
 }
 </style>
 </head>
@@ -19,35 +46,116 @@
 
 <div class="container">
 
+  <!-- SERVER NAME -->
   <h1 id="serverName">Loading...</h1>
 
+  <!-- STATUS -->
   <div class="card">
-    <h3>Server Status</h3>
-    <p>Raidly Bot: Installed ✔</p>
+    <h3>Raid Train Status</h3>
+    <p>Active Train: 1</p>
+    <p>Total Slots: 6</p>
   </div>
 
+  <!-- SLOTS -->
   <div class="card" style="margin-top:20px;">
-    <h3>Raid Activity</h3>
-    <p>Active Raid Trains: 1</p>
-    <p>Streamers Live: 4</p>
-    <p>Viewers Moving: 63</p>
+    <h3>Raid Slots</h3>
+    <div class="slots" id="slots"></div>
   </div>
 
+  <!-- CONTROLS -->
   <div class="card" style="margin-top:20px;">
     <h3>Controls</h3>
-    <button class="btn primary">Start Raid Train</button>
-    <button class="btn">Manage Slots</button>
+    <button class="btn primary" onclick="startTrain()">Start New Train</button>
+    <button class="btn" onclick="resetSlots()">Reset Slots</button>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="card" style="margin-top:20px;">
+    <h3>Live Activity</h3>
+    <div class="activity" id="activity"></div>
   </div>
 
 </div>
 
 <script>
+// server name
 const params = new URLSearchParams(window.location.search);
 const name = params.get("name");
 
 if (name) {
   document.getElementById("serverName").innerText = name;
 }
+
+// slots data
+let slots = [
+  { name: "Empty" },
+  { name: "Empty" },
+  { name: "Empty" },
+  { name: "Empty" },
+  { name: "Empty" },
+  { name: "Empty" }
+];
+
+const slotContainer = document.getElementById("slots");
+
+function renderSlots() {
+  slotContainer.innerHTML = "";
+
+  slots.forEach((slot, index) => {
+    const div = document.createElement("div");
+    div.className = "slot";
+
+    if (slot.name === "Empty") {
+      div.innerHTML = `
+        <h4>Slot ${index + 1}</h4>
+        <p>Empty</p>
+        <button class="btn primary" onclick="joinSlot(${index})">
+          Join
+        </button>
+      `;
+    } else {
+      div.innerHTML = `
+        <h4>Slot ${index + 1}</h4>
+        <p>${slot.name}</p>
+      `;
+    }
+
+    slotContainer.appendChild(div);
+  });
+}
+
+function joinSlot(index) {
+  slots[index].name = "You";
+  addActivity("You joined slot " + (index + 1));
+  renderSlots();
+}
+
+function resetSlots() {
+  slots = slots.map(() => ({ name: "Empty" }));
+  addActivity("Slots reset");
+  renderSlots();
+}
+
+function startTrain() {
+  addActivity("New raid train started");
+}
+
+// activity feed
+const activityContainer = document.getElementById("activity");
+
+function addActivity(text) {
+  const line = document.createElement("div");
+  line.innerText = text;
+
+  activityContainer.prepend(line);
+
+  if (activityContainer.children.length > 6) {
+    activityContainer.removeChild(activityContainer.lastChild);
+  }
+}
+
+// initial render
+renderSlots();
 </script>
 
 </body>
