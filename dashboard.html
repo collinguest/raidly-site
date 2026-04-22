@@ -68,7 +68,6 @@ body {
   gap: 10px;
 }
 
-/* avatar */
 .avatar {
   width: 32px;
   height: 32px;
@@ -76,14 +75,14 @@ body {
   background: #222;
 }
 
-/* server grid */
+/* grid */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 15px;
 }
 
-/* server card */
+/* card */
 .card {
   background: #14151a;
   padding: 20px;
@@ -106,9 +105,6 @@ body {
 }
 
 .free { background: #444; }
-.tier1 { background: #00e5ff; color: black; }
-.tier2 { background: #b9a7ff; color: black; }
-.tier3 { background: #ffcc00; color: black; }
 
 /* button */
 .btn {
@@ -125,8 +121,8 @@ body {
 .btn:hover {
   opacity: 0.85;
 }
-
 </style>
+
 </head>
 
 <body>
@@ -148,60 +144,67 @@ body {
 <!-- MAIN -->
 <div class="main">
 
+  <!-- HEADER -->
   <div class="header">
     <h2>Dashboard</h2>
 
     <div class="user">
-      <img id="avatar" class="avatar" src="" />
+      <img id="avatar" class="avatar" src="">
       <span id="username">Loading user...</span>
     </div>
   </div>
 
-  <!-- SERVERS -->
-  <div class="grid">
-
-    <div class="card">
-      <h3>Gaming Hub</h3>
-      <div class="badge tier2">Tier 2</div>
-      <a class="btn" href="#">Install Raidly</a>
-    </div>
-
-    <div class="card">
-      <h3>Streamer Lounge</h3>
-      <div class="badge tier1">Tier 1</div>
-      <a class="btn" href="#">Install Raidly</a>
-    </div>
-
-    <div class="card">
-      <h3>New Server</h3>
-      <div class="badge free">Free</div>
-      <a class="btn" href="#">Install Raidly</a>
-    </div>
-
-  </div>
+  <!-- SERVER GRID -->
+  <div class="grid" id="servers"></div>
 
 </div>
 
 </div>
 
-<!-- REAL LOGIN DATA SCRIPT -->
+<!-- SCRIPT -->
 <script>
 const params = new URLSearchParams(window.location.search);
 
 const username = params.get("username");
 const avatar = params.get("avatar");
 const id = params.get("id");
+const guilds = params.get("guilds");
 
+// USER INFO
 if (username) {
   document.getElementById("username").innerText = username;
 }
 
-// Discord avatar logic
+// AVATAR
 if (avatar && id) {
-  const avatarURL = `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
-  document.getElementById("avatar").src = avatarURL;
+  document.getElementById("avatar").src =
+    `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
 } else {
   document.getElementById("avatar").style.display = "none";
+}
+
+// SERVERS
+if (guilds) {
+  try {
+    const data = JSON.parse(decodeURIComponent(guilds));
+    const container = document.getElementById("servers");
+
+    data.forEach(server => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <h3>${server.name}</h3>
+        <div class="badge free">Server</div>
+        <a class="btn" href="#">Install Raidly</a>
+      `;
+
+      container.appendChild(card);
+    });
+
+  } catch (e) {
+    console.log("Guild parse error", e);
+  }
 }
 </script>
 
