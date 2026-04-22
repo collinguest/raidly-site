@@ -6,79 +6,36 @@
 
 <link rel="stylesheet" href="assets/styles.css">
 <script src="assets/data.js"></script>
-
-<style>
-.container {
-  display: flex;
-  min-height: 100vh;
-}
-
-.sidebar {
-  width: 220px;
-  background: #0f1016;
-  padding: 20px;
-}
-
-.logo {
-  color: #b9a7ff;
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 30px;
-}
-
-.nav a {
-  display: block;
-  margin: 10px 0;
-  color: #aaa;
-  text-decoration: none;
-}
-
-.nav a:hover {
-  color: #00e5ff;
-}
-
-.main {
-  flex: 1;
-  padding: 30px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-}
-
-.server-card {
-  cursor: pointer;
-}
-</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app-shell">
 
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="logo">Raidly</div>
 
-    <div class="nav">
-      <a href="#">Dashboard</a>
-      <a href="#">Servers</a>
-      <a href="#">Billing</a>
-      <a href="#">Settings</a>
-    </div>
+    <a href="#">Overview</a>
+    <a href="#">Servers</a>
+    <a href="#">Billing</a>
+    <a href="#">Settings</a>
   </div>
 
+  <!-- MAIN -->
   <div class="main">
 
-    <h2>Dashboard</h2>
+    <h2>Overview</h2>
+    <p>Manage your raid infrastructure across all servers</p>
 
-    <div class="card" style="margin-bottom:20px;">
-      <h3>Network Stats</h3>
+    <div class="card" style="margin: 20px 0;">
+      <h3>Network Health</h3>
       <p>Active Raid Trains: 3</p>
-      <p>Streamers Live: 12</p>
-      <p>Total Viewers Moving: 187</p>
+      <p>Live Streamers: 12</p>
+      <p>Viewer Flow: Stable</p>
     </div>
+
+    <h3>Servers</h3>
 
     <div class="grid" id="servers"></div>
 
@@ -90,22 +47,23 @@
 
 const container = document.getElementById("servers");
 
-SERVER_DATA.forEach(server => {
+SERVER_DATA.forEach(s => {
 
   const card = document.createElement("div");
-  card.className = "card server-card";
+  card.className = "card";
 
-  const statusClass = server.installed ? "installed" : "not-installed";
-  const statusText = server.installed ? "Installed ✔" : "Not Installed";
+  const status = s.installed ? "installed" : "not-installed";
+  const text = s.installed ? "Active" : "Not Installed";
 
   card.innerHTML = `
-    <h3>${server.name}</h3>
-    <div class="badge ${statusClass}">${statusText}</div>
+    <h3>${s.name}</h3>
+    <p>Raid system status</p>
+    <div class="badge ${status}">${text}</div><br><br>
+    <button class="btn primary">Open Server</button>
   `;
 
   card.onclick = () => {
-    window.location.href =
-      "server.html?name=" + encodeURIComponent(server.name);
+    window.location.href = "server.html?name=" + encodeURIComponent(s.name);
   };
 
   container.appendChild(card);
