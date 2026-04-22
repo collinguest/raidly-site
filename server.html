@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly Server - Auto Backup System</title>
+<title>Raidly Server - Raid Train Animation</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 
@@ -15,7 +15,7 @@
 
 .slots {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 15px;
   margin-top: 20px;
 }
@@ -26,6 +26,14 @@
   border-radius: 10px;
   border: 1px solid #222;
   text-align: center;
+  transition: 0.3s;
+}
+
+/* ACTIVE TRAIN SLOT */
+.active {
+  border: 2px solid #00e5ff;
+  box-shadow: 0 0 15px rgba(0,229,255,0.4);
+  transform: scale(1.05);
 }
 
 .tag {
@@ -46,11 +54,6 @@
   color: black;
 }
 
-.empty {
-  background: #444;
-  color: white;
-}
-
 .activity {
   margin-top: 20px;
   max-height: 150px;
@@ -63,47 +66,53 @@
 
 <div class="container">
 
-  <h1 id="serverName">Raid Train Control</h1>
+  <h1>Raid Train Control</h1>
 
   <div class="card">
-    <h3>Auto Backup System</h3>
-    <p>Backups automatically fill empty main slots</p>
+    <h3>Live Raid Train</h3>
+    <p>Watch the train move through slots automatically</p>
   </div>
 
   <div class="card" style="margin-top:20px;">
-    <h3>Raid Slots</h3>
+    <h3>Slots</h3>
     <div class="slots" id="slots"></div>
   </div>
 
   <div class="card" style="margin-top:20px;">
-    <h3>Live Activity</h3>
-    <div class="activity" id="activity"></div>
+    <h3>Activity Feed</h3>
+    <div id="activity"></div>
   </div>
 
 </div>
 
 <script>
 
-// SLOT DATA
+// RAID TRAIN DATA
 let slots = [
   { main: "StreamerA", backup: "Viewer1" },
-  { main: "", backup: "StreamerB" },
-  { main: "StreamerC", backup: "Viewer2" },
-  { main: "", backup: "" },
+  { main: "StreamerB", backup: "Viewer2" },
+  { main: "StreamerC", backup: "" },
+  { main: "", backup: "StreamerD" },
   { main: "", backup: "" },
   { main: "", backup: "" }
 ];
 
+let activeIndex = 0;
+
 const container = document.getElementById("slots");
 const activity = document.getElementById("activity");
 
-// render UI
+// RENDER SLOTS
 function renderSlots() {
   container.innerHTML = "";
 
   slots.forEach((slot, i) => {
     const div = document.createElement("div");
     div.className = "slot";
+
+    if (i === activeIndex) {
+      div.classList.add("active");
+    }
 
     div.innerHTML = `
       <h4>Slot ${i + 1}</h4>
@@ -121,28 +130,21 @@ function renderSlots() {
   });
 }
 
-// AUTO-FILL LOGIC
-function autoFillBackups() {
-  let changed = false;
+// TRAIN MOVEMENT
+function moveTrain() {
+  activeIndex++;
 
-  for (let i = 0; i < slots.length; i++) {
-    const slot = slots[i];
-
-    if (!slot.main && slot.backup) {
-      slot.main = slot.backup;
-      slot.backup = "";
-      changed = true;
-
-      log(`Backup promoted → Slot ${i + 1}`);
-    }
+  if (activeIndex >= slots.length) {
+    activeIndex = 0;
+    log("🚂 Raid train loop restarted");
+  } else {
+    log("➡ Train moved to slot " + (activeIndex + 1));
   }
 
-  if (changed) {
-    renderSlots();
-  }
+  renderSlots();
 }
 
-// activity log
+// ACTIVITY LOG
 function log(text) {
   const line = document.createElement("div");
   line.innerText = text;
@@ -154,27 +156,24 @@ function log(text) {
   }
 }
 
-// simulate system changes (demo behavior)
-function simulateBackupFlow() {
-  const emptySlots = slots.filter(s => !s.main && s.backup);
-
-  if (emptySlots.length === 0) return;
-
-  const index = slots.findIndex(s => !s.main && s.backup);
-
-  if (index !== -1) {
-    log("Backup waiting in slot " + (index + 1));
+// AUTO BACKUP PROMOTION (kept simple)
+function autoFill() {
+  for (let i = 0; i < slots.length; i++) {
+    if (!slots[i].main && slots[i].backup) {
+      slots[i].main = slots[i].backup;
+      slots[i].backup = "";
+      log("🔁 Backup promoted in slot " + (i + 1));
+    }
   }
 }
 
 // INIT
 renderSlots();
-simulateBackupFlow();
 
-// RUN AUTO SYSTEM
+// LOOP SYSTEM (THIS IS THE MAGIC)
 setInterval(() => {
-  autoFillBackups();
-  simulateBackupFlow();
+  autoFill();
+  moveTrain();
 }, 3000);
 
 </script>
