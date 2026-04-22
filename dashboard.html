@@ -5,6 +5,7 @@
 <title>Raidly Dashboard</title>
 
 <link rel="stylesheet" href="assets/styles.css">
+<script src="assets/data.js"></script>
 
 <style>
 .container {
@@ -41,27 +42,14 @@
   padding: 30px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
 }
 
-/* clickable card */
 .server-card {
   cursor: pointer;
-  transition: 0.2s;
-}
-
-.server-card:hover {
-  transform: scale(1.03);
 }
 </style>
 </head>
@@ -72,6 +60,7 @@
 
   <div class="sidebar">
     <div class="logo">Raidly</div>
+
     <div class="nav">
       <a href="#">Dashboard</a>
       <a href="#">Servers</a>
@@ -82,10 +71,7 @@
 
   <div class="main">
 
-    <div class="header">
-      <h2>Dashboard</h2>
-      <span>Demo User</span>
-    </div>
+    <h2>Dashboard</h2>
 
     <div class="card" style="margin-bottom:20px;">
       <h3>Network Stats</h3>
@@ -101,15 +87,11 @@
 </div>
 
 <script>
-const servers = [
-  { name: "Gaming Hub", installed: true },
-  { name: "Streamer Lounge", installed: false },
-  { name: "Community Server", installed: true }
-];
 
 const container = document.getElementById("servers");
 
-servers.forEach(server => {
+SERVER_DATA.forEach(server => {
+
   const card = document.createElement("div");
   card.className = "card server-card";
 
@@ -122,11 +104,13 @@ servers.forEach(server => {
   `;
 
   card.onclick = () => {
-    window.location.href = "server.html?name=" + encodeURIComponent(server.name);
+    window.location.href =
+      "server.html?name=" + encodeURIComponent(server.name);
   };
 
   container.appendChild(card);
 });
+
 </script>
 
 </body>
