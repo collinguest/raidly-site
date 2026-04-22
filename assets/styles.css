@@ -1,3 +1,4 @@
+/* BASE */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -9,6 +10,7 @@ html {
   scroll-behavior: smooth;
 }
 
+/* BUTTONS */
 .btn {
   display: inline-block;
   padding: 14px 22px;
@@ -22,11 +24,13 @@ html {
   transform: translateY(-2px);
 }
 
+/* PRIMARY BUTTON */
 .primary {
   background: linear-gradient(135deg, #00e5ff, #b9a7ff);
   color: black;
 }
 
+/* CARDS */
 .card {
   background: #14151a;
   padding: 20px;
@@ -37,4 +41,24 @@ html {
 
 .card:hover {
   transform: translateY(-4px);
+}
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* INSTALLED STATUS */
+.installed {
+  background: #00e5ff;
+  color: black;
+}
+
+/* NOT INSTALLED STATUS */
+.not-installed {
+  background: #444;
 }
