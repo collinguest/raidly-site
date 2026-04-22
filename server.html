@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly Server</title>
+<title>Raidly Server - Raid Train Control</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 
@@ -13,10 +13,9 @@
   padding: 40px;
 }
 
-/* slots */
 .slots {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
   margin-top: 20px;
 }
@@ -33,7 +32,29 @@
   margin: 0 0 10px 0;
 }
 
-/* activity */
+.tag {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.main {
+  background: #00e5ff;
+  color: black;
+}
+
+.backup {
+  background: #b9a7ff;
+  color: black;
+}
+
+.empty {
+  background: #444;
+  color: white;
+}
+
 .activity {
   margin-top: 20px;
   max-height: 150px;
@@ -46,27 +67,27 @@
 
 <div class="container">
 
-  <!-- SERVER NAME -->
+  <!-- TITLE -->
   <h1 id="serverName">Loading...</h1>
 
   <!-- STATUS -->
   <div class="card">
-    <h3>Raid Train Status</h3>
+    <h3>Raid Train System</h3>
     <p>Active Train: 1</p>
-    <p>Total Slots: 6</p>
+    <p>Backups Enabled: ✔</p>
   </div>
 
   <!-- SLOTS -->
   <div class="card" style="margin-top:20px;">
-    <h3>Raid Slots</h3>
+    <h3>Raid Slots (Main + Backup System)</h3>
     <div class="slots" id="slots"></div>
   </div>
 
   <!-- CONTROLS -->
   <div class="card" style="margin-top:20px;">
     <h3>Controls</h3>
-    <button class="btn primary" onclick="startTrain()">Start New Train</button>
-    <button class="btn" onclick="resetSlots()">Reset Slots</button>
+    <button class="btn primary" onclick="startTrain()">Start Train</button>
+    <button class="btn" onclick="resetTrain()">Reset Train</button>
   </div>
 
   <!-- ACTIVITY -->
@@ -86,61 +107,69 @@ if (name) {
   document.getElementById("serverName").innerText = name;
 }
 
-// slots data
+// SLOT DATA (main + backup system)
 let slots = [
-  { name: "Empty" },
-  { name: "Empty" },
-  { name: "Empty" },
-  { name: "Empty" },
-  { name: "Empty" },
-  { name: "Empty" }
+  { main: "StreamerA", backup: "Viewer1" },
+  { main: "", backup: "StreamerB" },
+  { main: "StreamerC", backup: "" },
+  { main: "", backup: "" },
+  { main: "", backup: "" },
+  { main: "", backup: "" }
 ];
 
-const slotContainer = document.getElementById("slots");
+const container = document.getElementById("slots");
 
+// render slots
 function renderSlots() {
-  slotContainer.innerHTML = "";
+  container.innerHTML = "";
 
   slots.forEach((slot, index) => {
     const div = document.createElement("div");
     div.className = "slot";
 
-    if (slot.name === "Empty") {
-      div.innerHTML = `
-        <h4>Slot ${index + 1}</h4>
-        <p>Empty</p>
-        <button class="btn primary" onclick="joinSlot(${index})">
-          Join
-        </button>
-      `;
-    } else {
-      div.innerHTML = `
-        <h4>Slot ${index + 1}</h4>
-        <p>${slot.name}</p>
-      `;
-    }
+    let mainStatus = slot.main ? slot.main : "Empty";
+    let backupStatus = slot.backup ? slot.backup : "Empty";
 
-    slotContainer.appendChild(div);
+    div.innerHTML = `
+      <h4>Slot ${index + 1}</h4>
+
+      <div class="tag main">Main: ${mainStatus}</div><br>
+      <div class="tag backup">Backup: ${backupStatus}</div><br>
+
+      ${slot.main === "" && slot.backup !== "" ? `
+        <button class="btn primary" onclick="takeSlot(${index})">
+          Take Main Slot
+        </button>
+      ` : ""}
+    `;
+
+    container.appendChild(div);
   });
 }
 
-function joinSlot(index) {
-  slots[index].name = "You";
-  addActivity("You joined slot " + (index + 1));
-  renderSlots();
+// take slot from backup
+function takeSlot(index) {
+  if (slots[index].main === "" && slots[index].backup !== "") {
+    slots[index].main = slots[index].backup;
+    slots[index].backup = "";
+    addActivity("Backup promoted to main in slot " + (index + 1));
+    renderSlots();
+  }
 }
 
-function resetSlots() {
-  slots = slots.map(() => ({ name: "Empty" }));
-  addActivity("Slots reset");
-  renderSlots();
-}
-
+// start train
 function startTrain() {
   addActivity("New raid train started");
 }
 
-// activity feed
+// reset
+function resetTrain() {
+  slots = slots.map(() => ({ main: "", backup: "" }));
+  addActivity("Train reset");
+  renderSlots();
+}
+
+// activity
 const activityContainer = document.getElementById("activity");
 
 function addActivity(text) {
@@ -154,7 +183,7 @@ function addActivity(text) {
   }
 }
 
-// initial render
+// init
 renderSlots();
 </script>
 
