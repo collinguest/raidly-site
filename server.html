@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Server Panel</title>
+
+<link rel="stylesheet" href="assets/styles.css">
+
+<style>
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1 id="serverName">Loading...</h1>
+
+  <div class="card">
+    <h3>Server Status</h3>
+    <p>Raidly Bot: Installed ✔</p>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3>Raid Activity</h3>
+    <p>Active Raid Trains: 1</p>
+    <p>Streamers Live: 4</p>
+    <p>Viewers Moving: 63</p>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3>Controls</h3>
+    <button class="btn primary">Start Raid Train</button>
+    <button class="btn">Manage Slots</button>
+  </div>
+
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name");
+
+if (name) {
+  document.getElementById("serverName").innerText = name;
+}
+</script>
+
+</body>
+</html>
