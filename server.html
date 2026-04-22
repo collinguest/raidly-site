@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly Server - Moving Train</title>
+<title>Raidly - Data Driven Train System</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 
@@ -11,54 +11,75 @@
   max-width: 1000px;
   margin: auto;
   padding: 40px;
-  position: relative;
 }
 
-.slots {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 15px;
-  margin-top: 40px;
-  position: relative;
+.train-system {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
-/* SLOT BOX */
-.slot {
-  background: #14151a;
-  padding: 15px;
+/* TRAIN ROW */
+.train-row {
+  position: relative;
+  height: 70px;
+  background: #0f1016;
   border-radius: 10px;
-  border: 1px solid #222;
-  text-align: center;
-  position: relative;
+  padding: 10px;
+  overflow: hidden;
 }
 
-/* TRAIN INDICATOR */
-.train {
-  position: absolute;
-  top: -25px;
-  width: 40px;
-  height: 20px;
-  background: linear-gradient(135deg, #00e5ff, #b9a7ff);
-  border-radius: 20px;
-  transition: 0.5s ease;
-  box-shadow: 0 0 15px rgba(0,229,255,0.6);
-}
-
-/* small rail line */
+/* TRACK */
 .track {
   position: absolute;
-  top: 10px;
-  left: 0;
-  right: 0;
+  top: 50%;
+  left: 10px;
+  right: 10px;
   height: 2px;
   background: #222;
-  z-index: -1;
+  transform: translateY(-50%);
 }
 
-.activity {
-  margin-top: 20px;
-  max-height: 150px;
-  overflow: hidden;
+/* TRAIN */
+.train {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #00e5ff, #b9a7ff);
+  transform: translateY(-50%);
+  box-shadow: 0 0 15px rgba(0,229,255,0.6);
+  transition: 0.6s ease;
+}
+
+/* LABEL */
+.label {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+/* STATUS */
+.status {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 5px;
+}
+
+.installed {
+  background: #00e5ff;
+  color: black;
+}
+
+.not-installed {
+  background: #444;
+  color: white;
 }
 </style>
 </head>
@@ -67,77 +88,90 @@
 
 <div class="container">
 
-  <h1>Raid Train Control</h1>
+  <h1>Raidly Live Train Network</h1>
 
   <div class="card">
-    <h3>Live Moving Raid Train</h3>
-    <p>The train physically moves across slots</p>
+    <h3>Server Driven System</h3>
+    <p>Each server generates its own live raid train</p>
   </div>
 
-  <!-- TRAIN AREA -->
-  <div class="slots" id="slots">
-
-    <div class="track"></div>
-    <div class="train" id="train"></div>
-
-  </div>
-
-  <div class="card" style="margin-top:20px;">
-    <h3>Activity Feed</h3>
-    <div id="activity"></div>
-  </div>
+  <div class="train-system" id="system"></div>
 
 </div>
 
 <script>
 
-let slots = new Array(6).fill(null).map((_, i) => ({
-  main: "Streamer " + (i + 1),
-  backup: "Backup " + (i + 1)
+// REAL SERVER DATA (source of truth)
+const servers = [
+  { name: "Gaming Hub", installed: true },
+  { name: "Streamer Lounge", installed: false },
+  { name: "Community Server", installed: true },
+  { name: "Esports Network", installed: true },
+  { name: "Chill Zone", installed: false }
+];
+
+// TRANSFORM INTO TRAINS
+let trains = servers.map((s, i) => ({
+  name: s.name,
+  installed: s.installed,
+  index: Math.floor(Math.random() * 6)
 }));
 
-const train = document.getElementById("train");
-const activity = document.getElementById("activity");
+const system = document.getElementById("system");
 
-let index = 0;
+// BUILD UI
+function renderTrains() {
+  system.innerHTML = "";
 
-// POSITION TRAIN OVER SLOT
-function moveTrainVisual() {
-  const slotWidth = document.querySelector(".slots").offsetWidth / 6;
+  trains.forEach((t, i) => {
 
-  train.style.left = (index * slotWidth + slotWidth / 2 - 20) + "px";
+    const row = document.createElement("div");
+    row.className = "train-row";
 
-  log("🚂 Train moved to slot " + (index + 1));
+    const statusClass = t.installed ? "installed" : "not-installed";
+    const statusText = t.installed ? "Installed" : "Not Installed";
 
-  index++;
+    row.innerHTML = `
+      <div class="label">${t.name}</div>
+      <div class="status ${statusClass}">${statusText}</div>
+      <div class="track"></div>
+      <div class="train" id="train-${i}"></div>
+    `;
 
-  if (index >= slots.length) {
-    index = 0;
-    log("🔁 Train loop restarted");
-  }
+    system.appendChild(row);
+  });
 }
 
-// ACTIVITY FEED
-function log(text) {
-  const div = document.createElement("div");
-  div.innerText = text;
+// MOVE TRAINS BASED ON DATA
+function moveTrains() {
+  const rows = document.querySelectorAll(".train-row");
 
-  activity.prepend(div);
+  trains.forEach((t, i) => {
+    const train = document.getElementById("train-" + i);
 
-  if (activity.children.length > 6) {
-    activity.removeChild(activity.lastChild);
-  }
+    const rowWidth = rows[i].offsetWidth - 50;
+    const step = rowWidth / 6;
+
+    // different speed logic based on install status
+    const speed = t.installed ? 1 : 2;
+
+    t.index += speed;
+
+    if (t.index >= 6) {
+      t.index = 0;
+    }
+
+    train.style.left = (t.index * step + 10) + "px";
+  });
 }
 
-// INIT POSITION
-setTimeout(() => {
-  moveTrainVisual();
-}, 500);
+// INIT
+renderTrains();
 
 // LOOP
 setInterval(() => {
-  moveTrainVisual();
-}, 2500);
+  moveTrains();
+}, 1200);
 
 </script>
 
