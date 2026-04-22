@@ -12,7 +12,6 @@
   min-height: 100vh;
 }
 
-/* sidebar */
 .sidebar {
   width: 220px;
   background: #0f1016;
@@ -37,13 +36,11 @@
   color: #00e5ff;
 }
 
-/* main */
 .main {
   flex: 1;
   padding: 30px;
 }
 
-/* header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -51,19 +48,20 @@
   margin-bottom: 25px;
 }
 
-/* grid */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
 }
 
-/* avatar */
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #222;
+/* clickable card */
+.server-card {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.server-card:hover {
+  transform: scale(1.03);
 }
 </style>
 </head>
@@ -72,10 +70,8 @@
 
 <div class="container">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="logo">Raidly</div>
-
     <div class="nav">
       <a href="#">Dashboard</a>
       <a href="#">Servers</a>
@@ -84,20 +80,13 @@
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
 
-    <!-- HEADER -->
     <div class="header">
       <h2>Dashboard</h2>
-
-      <div style="display:flex; align-items:center; gap:10px;">
-        <div class="avatar"></div>
-        <span>Demo User</span>
-      </div>
+      <span>Demo User</span>
     </div>
 
-    <!-- STATS -->
     <div class="card" style="margin-bottom:20px;">
       <h3>Network Stats</h3>
       <p>Active Raid Trains: 3</p>
@@ -105,14 +94,12 @@
       <p>Total Viewers Moving: 187</p>
     </div>
 
-    <!-- SERVERS -->
     <div class="grid" id="servers"></div>
 
   </div>
 
 </div>
 
-<!-- SCRIPT -->
 <script>
 const servers = [
   { name: "Gaming Hub", installed: true },
@@ -124,21 +111,19 @@ const container = document.getElementById("servers");
 
 servers.forEach(server => {
   const card = document.createElement("div");
-  card.className = "card";
+  card.className = "card server-card";
 
   const statusClass = server.installed ? "installed" : "not-installed";
   const statusText = server.installed ? "Installed ✔" : "Not Installed";
-  const buttonText = server.installed ? "Reinstall" : "Install Raidly";
 
   card.innerHTML = `
     <h3>${server.name}</h3>
     <div class="badge ${statusClass}">${statusText}</div>
-
-    <a class="btn primary"
-      href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
-      ${buttonText}
-    </a>
   `;
+
+  card.onclick = () => {
+    window.location.href = "server.html?name=" + encodeURIComponent(server.name);
+  };
 
   container.appendChild(card);
 });
