@@ -170,12 +170,12 @@ const avatar = params.get("avatar");
 const id = params.get("id");
 const guilds = params.get("guilds");
 
-// USER INFO
+/* USERNAME */
 if (username) {
   document.getElementById("username").innerText = username;
 }
 
-// AVATAR
+/* AVATAR */
 if (avatar && id) {
   document.getElementById("avatar").src =
     `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
@@ -183,7 +183,11 @@ if (avatar && id) {
   document.getElementById("avatar").style.display = "none";
 }
 
-// SERVERS
+/* BOT INSTALL LINK (REAL) */
+const installLink =
+  "https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands";
+
+/* SERVERS */
 if (guilds) {
   try {
     const data = JSON.parse(decodeURIComponent(guilds));
@@ -196,14 +200,17 @@ if (guilds) {
       card.innerHTML = `
         <h3>${server.name}</h3>
         <div class="badge free">Server</div>
-        <a class="btn" href="#">Install Raidly</a>
+
+        <a class="btn" href="${installLink}" target="_blank">
+          Install Raidly
+        </a>
       `;
 
       container.appendChild(card);
     });
 
   } catch (e) {
-    console.log("Guild parse error", e);
+    console.log("Guild parse error:", e);
   }
 }
 </script>
