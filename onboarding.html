@@ -37,10 +37,6 @@
   transition: 0.3s;
 }
 
-h1 {
-  margin-bottom: 10px;
-}
-
 p {
   color: #aaa;
 }
@@ -62,7 +58,7 @@ p {
   <div class="step active" id="step1">
     <div class="card">
       <h3>Step 1: Welcome</h3>
-      <p>You're about to launch your first raid system</p>
+      <p>You’re about to launch your first raid system</p>
       <button class="btn primary" onclick="next()">Start Setup</button>
     </div>
   </div>
@@ -71,7 +67,7 @@ p {
   <div class="step" id="step2">
     <div class="card">
       <h3>Step 2: Connect Discord</h3>
-      <p>We need access to your servers</p>
+      <p>Link your Discord account to continue</p>
 
       <a class="btn primary"
          href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&response_type=code&redirect_uri=https%3A%2F%2Fraidly.pages.dev%2Fauth%2Fdiscord%2Fcallback&scope=identify%20guilds">
@@ -87,8 +83,8 @@ p {
   <!-- STEP 3 -->
   <div class="step" id="step3">
     <div class="card">
-      <h3>Step 3: Install Raidly</h3>
-      <p>Add the bot to your server</p>
+      <h3>Step 3: Install Raidly Bot</h3>
+      <p>Add Raidly to your server</p>
 
       <a class="btn primary"
          href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
@@ -115,12 +111,13 @@ p {
 
 </div>
 
+<script src="assets/auth.js"></script>
+
 <script>
 
 let step = 1;
 
 function update() {
-
   document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
   document.getElementById("step" + step).classList.add("active");
 
@@ -135,12 +132,18 @@ function next() {
 }
 
 function finish() {
+  // mark onboarding complete
   localStorage.setItem("raidly_onboarded", "true");
+
+  // create fake login session
+  AUTH.login();
+
+  // go to app
   window.location.href = "dashboard.html";
 }
 
-// auto skip if already onboarded
-if (localStorage.getItem("raidly_onboarded") === "true") {
+// auto-skip if already onboarded + logged in
+if (AUTH.isLoggedIn() && localStorage.getItem("raidly_onboarded") === "true") {
   window.location.href = "dashboard.html";
 }
 
