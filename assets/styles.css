@@ -1,27 +1,40 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #0b0c10;
+  background: radial-gradient(circle at top, #11131a, #0b0c10);
   color: white;
 }
 
-a {
-  color: #00e5ff;
+html {
+  scroll-behavior: smooth;
+}
+
+.btn {
+  display: inline-block;
+  padding: 14px 22px;
+  border-radius: 12px;
   text-decoration: none;
+  font-weight: bold;
+  transition: 0.2s;
 }
 
-button {
-  cursor: pointer;
+.btn:hover {
+  transform: translateY(-2px);
 }
 
-.container {
-  padding: 20px;
+.primary {
+  background: linear-gradient(135deg, #00e5ff, #b9a7ff);
+  color: black;
 }
 
-/* simple card system for dashboard later */
 .card {
   background: #14151a;
+  padding: 20px;
+  border-radius: 12px;
   border: 1px solid #222;
-  border-radius: 10px;
-  padding: 15px;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
 }
