@@ -4,15 +4,9 @@
 <meta charset="UTF-8">
 <title>Raidly Dashboard</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0c10;
-  color: white;
-}
+<link rel="stylesheet" href="assets/styles.css">
 
-/* layout */
+<style>
 .container {
   display: flex;
   min-height: 100vh;
@@ -20,36 +14,33 @@ body {
 
 /* sidebar */
 .sidebar {
-  width: 240px;
+  width: 220px;
   background: #0f1016;
   padding: 20px;
-  border-right: 1px solid #1c1d22;
 }
 
 .logo {
   color: #b9a7ff;
+  font-size: 20px;
   font-weight: bold;
-  font-size: 18px;
   margin-bottom: 30px;
 }
 
 .nav a {
   display: block;
-  color: #00e5ff;
+  margin: 10px 0;
+  color: #aaa;
   text-decoration: none;
-  margin: 12px 0;
-  padding: 8px;
-  border-radius: 8px;
 }
 
 .nav a:hover {
-  background: rgba(0,229,255,0.08);
+  color: #00e5ff;
 }
 
 /* main */
 .main {
   flex: 1;
-  padding: 40px;
+  padding: 30px;
 }
 
 /* header */
@@ -57,163 +48,98 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
-.user {
-  color: #aaa;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
 }
 
+/* avatar */
 .avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   background: #222;
 }
-
-/* grid */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 15px;
-}
-
-/* card */
-.card {
-  background: #14151a;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #222;
-}
-
-.card h3 {
-  margin: 0;
-  color: #00e5ff;
-}
-
-/* badge */
-.badge {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-.free { background: #444; }
-
-/* button */
-.btn {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 10px;
-  background: #00e5ff;
-  color: black;
-  text-decoration: none;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.btn:hover {
-  opacity: 0.85;
-}
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="logo">Raidly</div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">Raidly</div>
 
-  <div class="nav">
-    <a href="#">Dashboard</a>
-    <a href="#">Servers</a>
-    <a href="#">Billing</a>
-    <a href="#">Settings</a>
-  </div>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-  <!-- HEADER -->
-  <div class="header">
-    <h2>Dashboard</h2>
-
-    <div class="user">
-      <img id="avatar" class="avatar" src="">
-      <span id="username">Loading user...</span>
+    <div class="nav">
+      <a href="#">Dashboard</a>
+      <a href="#">Servers</a>
+      <a href="#">Billing</a>
+      <a href="#">Settings</a>
     </div>
   </div>
 
-  <!-- SERVER GRID -->
-  <div class="grid" id="servers"></div>
+  <!-- MAIN -->
+  <div class="main">
 
-</div>
+    <!-- HEADER -->
+    <div class="header">
+      <h2>Dashboard</h2>
 
-</div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar"></div>
+        <span>Demo User</span>
+      </div>
+    </div>
 
-<!-- SCRIPT -->
-<script>
-const params = new URLSearchParams(window.location.search);
+    <!-- STATS -->
+    <div class="card" style="margin-bottom:20px;">
+      <h3>Network Stats</h3>
+      <p>Active Raid Trains: 3</p>
+      <p>Streamers Live: 12</p>
+      <p>Total Viewers Moving: 187</p>
+    </div>
 
-const username = params.get("username");
-const avatar = params.get("avatar");
-const id = params.get("id");
-const guilds = params.get("guilds");
+    <!-- SERVERS -->
+    <div class="grid">
 
-/* USERNAME */
-if (username) {
-  document.getElementById("username").innerText = username;
-}
-
-/* AVATAR */
-if (avatar && id) {
-  document.getElementById("avatar").src =
-    `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
-} else {
-  document.getElementById("avatar").style.display = "none";
-}
-
-/* BOT INSTALL LINK (REAL) */
-const installLink =
-  "https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands";
-
-/* SERVERS */
-if (guilds) {
-  try {
-    const data = JSON.parse(decodeURIComponent(guilds));
-    const container = document.getElementById("servers");
-
-    data.forEach(server => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <h3>${server.name}</h3>
-        <div class="badge free">Server</div>
-
-        <a class="btn" href="${installLink}" target="_blank">
+      <div class="card">
+        <h3>Gaming Hub</h3>
+        <div class="badge free">Free</div>
+        <a class="btn primary"
+           href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
           Install Raidly
         </a>
-      `;
+      </div>
 
-      container.appendChild(card);
-    });
+      <div class="card">
+        <h3>Streamer Lounge</h3>
+        <div class="badge free">Free</div>
+        <a class="btn primary"
+           href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
+          Install Raidly
+        </a>
+      </div>
 
-  } catch (e) {
-    console.log("Guild parse error:", e);
-  }
-}
-</script>
+      <div class="card">
+        <h3>Community Server</h3>
+        <div class="badge free">Free</div>
+        <a class="btn primary"
+           href="https://discord.com/oauth2/authorize?client_id=1464326736660398403&permissions=17601045031953&scope=bot%20applications.commands">
+          Install Raidly
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 </body>
 </html>
