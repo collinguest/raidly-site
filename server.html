@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly - Data Driven Train System</title>
+<title>Raidly Server - Connected Train System</title>
 
 <link rel="stylesheet" href="assets/styles.css">
+<script src="assets/data.js"></script>
 
 <style>
 .container {
@@ -19,7 +20,6 @@
   gap: 30px;
 }
 
-/* TRAIN ROW */
 .train-row {
   position: relative;
   height: 70px;
@@ -29,7 +29,6 @@
   overflow: hidden;
 }
 
-/* TRACK */
 .track {
   position: absolute;
   top: 50%;
@@ -40,7 +39,6 @@
   transform: translateY(-50%);
 }
 
-/* TRAIN */
 .train {
   position: absolute;
   top: 50%;
@@ -53,7 +51,6 @@
   transition: 0.6s ease;
 }
 
-/* LABEL */
 .label {
   position: absolute;
   top: 5px;
@@ -62,7 +59,6 @@
   color: #aaa;
 }
 
-/* STATUS */
 .status {
   position: absolute;
   right: 10px;
@@ -88,11 +84,11 @@
 
 <div class="container">
 
-  <h1>Raidly Live Train Network</h1>
+  <h1 id="title">Server Train System</h1>
 
   <div class="card">
-    <h3>Server Driven System</h3>
-    <p>Each server generates its own live raid train</p>
+    <h3>Live Connected System</h3>
+    <p>Trains are now powered by dashboard server data</p>
   </div>
 
   <div class="train-system" id="system"></div>
@@ -101,17 +97,8 @@
 
 <script>
 
-// REAL SERVER DATA (source of truth)
-const servers = [
-  { name: "Gaming Hub", installed: true },
-  { name: "Streamer Lounge", installed: false },
-  { name: "Community Server", installed: true },
-  { name: "Esports Network", installed: true },
-  { name: "Chill Zone", installed: false }
-];
-
-// TRANSFORM INTO TRAINS
-let trains = servers.map((s, i) => ({
+// USE SAME DATA SOURCE
+let trains = SERVER_DATA.map((s, i) => ({
   name: s.name,
   installed: s.installed,
   index: Math.floor(Math.random() * 6)
@@ -119,8 +106,7 @@ let trains = servers.map((s, i) => ({
 
 const system = document.getElementById("system");
 
-// BUILD UI
-function renderTrains() {
+function render() {
   system.innerHTML = "";
 
   trains.forEach((t, i) => {
@@ -142,36 +128,28 @@ function renderTrains() {
   });
 }
 
-// MOVE TRAINS BASED ON DATA
-function moveTrains() {
+function move() {
+
   const rows = document.querySelectorAll(".train-row");
 
   trains.forEach((t, i) => {
+
     const train = document.getElementById("train-" + i);
 
-    const rowWidth = rows[i].offsetWidth - 50;
-    const step = rowWidth / 6;
+    const width = rows[i].offsetWidth - 50;
+    const step = width / 6;
 
-    // different speed logic based on install status
-    const speed = t.installed ? 1 : 2;
+    t.index += t.installed ? 1 : 0.5;
 
-    t.index += speed;
-
-    if (t.index >= 6) {
-      t.index = 0;
-    }
+    if (t.index >= 6) t.index = 0;
 
     train.style.left = (t.index * step + 10) + "px";
   });
 }
 
-// INIT
-renderTrains();
+render();
 
-// LOOP
-setInterval(() => {
-  moveTrains();
-}, 1200);
+setInterval(move, 1200);
 
 </script>
 
