@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Raidly Server - Raid Train Control</title>
+<title>Raidly Server - Auto Backup System</title>
 
 <link rel="stylesheet" href="assets/styles.css">
 
@@ -28,16 +28,12 @@
   text-align: center;
 }
 
-.slot h4 {
-  margin: 0 0 10px 0;
-}
-
 .tag {
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
   display: inline-block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .main {
@@ -67,30 +63,18 @@
 
 <div class="container">
 
-  <!-- TITLE -->
-  <h1 id="serverName">Loading...</h1>
+  <h1 id="serverName">Raid Train Control</h1>
 
-  <!-- STATUS -->
   <div class="card">
-    <h3>Raid Train System</h3>
-    <p>Active Train: 1</p>
-    <p>Backups Enabled: ✔</p>
+    <h3>Auto Backup System</h3>
+    <p>Backups automatically fill empty main slots</p>
   </div>
 
-  <!-- SLOTS -->
   <div class="card" style="margin-top:20px;">
-    <h3>Raid Slots (Main + Backup System)</h3>
+    <h3>Raid Slots</h3>
     <div class="slots" id="slots"></div>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="card" style="margin-top:20px;">
-    <h3>Controls</h3>
-    <button class="btn primary" onclick="startTrain()">Start Train</button>
-    <button class="btn" onclick="resetTrain()">Reset Train</button>
-  </div>
-
-  <!-- ACTIVITY -->
   <div class="card" style="margin-top:20px;">
     <h3>Live Activity</h3>
     <div class="activity" id="activity"></div>
@@ -99,92 +83,100 @@
 </div>
 
 <script>
-// server name
-const params = new URLSearchParams(window.location.search);
-const name = params.get("name");
 
-if (name) {
-  document.getElementById("serverName").innerText = name;
-}
-
-// SLOT DATA (main + backup system)
+// SLOT DATA
 let slots = [
   { main: "StreamerA", backup: "Viewer1" },
   { main: "", backup: "StreamerB" },
-  { main: "StreamerC", backup: "" },
+  { main: "StreamerC", backup: "Viewer2" },
   { main: "", backup: "" },
   { main: "", backup: "" },
   { main: "", backup: "" }
 ];
 
 const container = document.getElementById("slots");
+const activity = document.getElementById("activity");
 
-// render slots
+// render UI
 function renderSlots() {
   container.innerHTML = "";
 
-  slots.forEach((slot, index) => {
+  slots.forEach((slot, i) => {
     const div = document.createElement("div");
     div.className = "slot";
 
-    let mainStatus = slot.main ? slot.main : "Empty";
-    let backupStatus = slot.backup ? slot.backup : "Empty";
-
     div.innerHTML = `
-      <h4>Slot ${index + 1}</h4>
+      <h4>Slot ${i + 1}</h4>
 
-      <div class="tag main">Main: ${mainStatus}</div><br>
-      <div class="tag backup">Backup: ${backupStatus}</div><br>
+      <div class="tag main">
+        Main: ${slot.main || "Empty"}
+      </div><br>
 
-      ${slot.main === "" && slot.backup !== "" ? `
-        <button class="btn primary" onclick="takeSlot(${index})">
-          Take Main Slot
-        </button>
-      ` : ""}
+      <div class="tag backup">
+        Backup: ${slot.backup || "Empty"}
+      </div>
     `;
 
     container.appendChild(div);
   });
 }
 
-// take slot from backup
-function takeSlot(index) {
-  if (slots[index].main === "" && slots[index].backup !== "") {
-    slots[index].main = slots[index].backup;
-    slots[index].backup = "";
-    addActivity("Backup promoted to main in slot " + (index + 1));
+// AUTO-FILL LOGIC
+function autoFillBackups() {
+  let changed = false;
+
+  for (let i = 0; i < slots.length; i++) {
+    const slot = slots[i];
+
+    if (!slot.main && slot.backup) {
+      slot.main = slot.backup;
+      slot.backup = "";
+      changed = true;
+
+      log(`Backup promoted → Slot ${i + 1}`);
+    }
+  }
+
+  if (changed) {
     renderSlots();
   }
 }
 
-// start train
-function startTrain() {
-  addActivity("New raid train started");
-}
-
-// reset
-function resetTrain() {
-  slots = slots.map(() => ({ main: "", backup: "" }));
-  addActivity("Train reset");
-  renderSlots();
-}
-
-// activity
-const activityContainer = document.getElementById("activity");
-
-function addActivity(text) {
+// activity log
+function log(text) {
   const line = document.createElement("div");
   line.innerText = text;
 
-  activityContainer.prepend(line);
+  activity.prepend(line);
 
-  if (activityContainer.children.length > 6) {
-    activityContainer.removeChild(activityContainer.lastChild);
+  if (activity.children.length > 6) {
+    activity.removeChild(activity.lastChild);
   }
 }
 
-// init
+// simulate system changes (demo behavior)
+function simulateBackupFlow() {
+  const emptySlots = slots.filter(s => !s.main && s.backup);
+
+  if (emptySlots.length === 0) return;
+
+  const index = slots.findIndex(s => !s.main && s.backup);
+
+  if (index !== -1) {
+    log("Backup waiting in slot " + (index + 1));
+  }
+}
+
+// INIT
 renderSlots();
+simulateBackupFlow();
+
+// RUN AUTO SYSTEM
+setInterval(() => {
+  autoFillBackups();
+  simulateBackupFlow();
+}, 3000);
+
 </script>
 
 </body>
